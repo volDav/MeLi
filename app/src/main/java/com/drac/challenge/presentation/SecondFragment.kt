@@ -1,11 +1,12 @@
-package com.drac.challenge
+package com.drac.challenge.presentation
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.drac.challenge.R
 import com.drac.challenge.databinding.FragmentSecondBinding
 
 /**
