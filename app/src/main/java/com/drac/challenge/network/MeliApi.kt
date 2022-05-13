@@ -1,5 +1,6 @@
 package com.drac.challenge.network
 
+import com.drac.challenge.domain.model.Description
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.model.ObjectItems
 import retrofit2.http.GET
@@ -18,6 +19,11 @@ interface MeliApi {
     suspend fun getFullItem(
         @Path("itemId") itemId: String
     ): Item
+
+    @GET("items/{itemId}/description")
+    suspend fun getDescription(
+        @Path("itemId") itemId: String
+    ): Description
 
 /*
     @GET("items/{itemId}/description")

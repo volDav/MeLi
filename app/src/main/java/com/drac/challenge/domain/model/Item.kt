@@ -10,5 +10,8 @@ data class Item (
     val availableQuantity: Int,
     @SerializedName("sold_quantity")
     val soldQuantity: Int,
-    val thumbnail: String
+    val thumbnail: String,
+
+    var pictures: List<Picture>? = null,
+    var description: Description? = null
 )
