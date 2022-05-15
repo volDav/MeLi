@@ -8,6 +8,8 @@
     <string name="previous">Previous</string>
 
     <string name="again">Reintentar</string>
-    <string name="descripcion">Descripción</string>
+    <string name="description">Descripción</string>
     <string name="error_service">Se presento un inconveniente</string>
+    <string name="loading">Cargando</string>
+    <string name="accept">Aceptar</string>
 </resources>

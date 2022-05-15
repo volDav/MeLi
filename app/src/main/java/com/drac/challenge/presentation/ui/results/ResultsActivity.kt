@@ -3,13 +3,15 @@ package com.drac.challenge.presentation.ui.results
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.drac.challenge.databinding.ActivityResultsBinding
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.presentation.common.State
+import com.drac.challenge.presentation.common.closeProgressDialog
+import com.drac.challenge.presentation.common.showProgressDialog
 import com.drac.challenge.presentation.ui.detail.DetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -41,16 +43,29 @@ class ResultsActivity : AppCompatActivity() {
 
         loadAdapter()
 
+        initListeners()
+
+        viewModel.executeQuery()
+    }
+
+    private fun hideOrShowRequestAgain(show: Boolean) {
+        binding.btnRepeat.visibility = if(show) View.VISIBLE else View.GONE
+    }
+
+    private fun initListeners() {
         viewModel.stateRequest.onEach {
             when (it) {
                 is State.Loading -> {
-                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
+                    showProgressDialog()
+                    hideOrShowRequestAgain(false)
                 }
                 is State.Success -> {
-                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                    closeProgressDialog()
+                    hideOrShowRequestAgain(false)
                 }
                 is State.Error -> {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                    closeProgressDialog()
+                    hideOrShowRequestAgain(true)
                 }
                 else -> Unit
             }
@@ -60,7 +75,9 @@ class ResultsActivity : AppCompatActivity() {
             fillAdapter(it)
         }.launchIn(lifecycleScope)
 
-        viewModel.executeQuery()
+        binding.btnRepeat.setOnClickListener {
+            viewModel.executeQuery()
+        }
     }
 
     private fun loadAdapter() {

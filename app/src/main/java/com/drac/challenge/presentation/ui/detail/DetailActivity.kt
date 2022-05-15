@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.drac.challenge.databinding.ActivityDetailBinding
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.presentation.common.State
+import com.drac.challenge.presentation.common.closeProgressDialog
+import com.drac.challenge.presentation.common.showProgressDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -39,40 +41,60 @@ class DetailActivity : AppCompatActivity() {
 
         viewModel.setId(intent.getStringExtra("itemId") ?: "")
 
+        initListeners()
+
+        viewModel.executeRequest()
+
+    }
+
+    private fun initListeners() {
         viewModel.stateRequest.onEach {
             when (it) {
                 is State.Loading -> {
-                    Toast.makeText(this, "Loading", Toast.LENGTH_SHORT).show()
+                    showProgressDialog()
+                    hideOrShowRequestAgain(false)
                 }
                 is State.Success -> {
-                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                    closeProgressDialog()
+                    hideOrShowRequestAgain(false)
                 }
                 is State.Error -> {
-                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                    closeProgressDialog()
+                    hideOrShowRequestAgain(true)
                 }
                 else -> Unit
             }
         }.launchIn(lifecycleScope)
 
         viewModel.fullItem.observe(this) {
-            binding.tvTitle.text = it.title
-            binding.tvPrice.text = "${it.price}"
+            setData(it)
             loadData(it)
         }
 
-        viewModel.executeRequest()
+        binding.btnRepeat.setOnClickListener {
+            viewModel.executeRequest()
+        }
+    }
 
+    private fun hideOrShowRequestAgain(show: Boolean) {
+        binding.btnRepeat.visibility = if(show) View.VISIBLE else View.GONE
+    }
+
+    private fun setData(it: Item) {
+        binding.tvTitle.text = it.title
+        binding.tvPrice.text = "${it.price}"
+        binding.tvDescription.text = it.description?.plainText ?: ""
     }
 
     private fun loadData(item: Item) {
-        item.pictures?.let {
-            binding.vpCarrusel.adapter = FragmentPictureAdapter(this, it)
+        item.pictures?.let { lst ->
+            binding.vpCarrusel.adapter = FragmentPictureAdapter(this, lst)
             pageCallback = object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
                 override fun onPageSelected(position: Int) {
-                    if(it.isNotEmpty()) {
-                        val str = (position + 1).toString() + "/" + it.size
+                    if(lst.isNotEmpty()) {
+                        val str = "${position + 1}/${lst.size}"
                         binding.tvPager.text = str
                     }
                 }

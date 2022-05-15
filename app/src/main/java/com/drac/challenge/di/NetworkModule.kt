@@ -1,7 +1,7 @@
 package com.drac.challenge.di
 
 import com.drac.challenge.BuildConfig
-import com.drac.challenge.network.MeliApi
+import com.drac.challenge.data.network.MeliApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

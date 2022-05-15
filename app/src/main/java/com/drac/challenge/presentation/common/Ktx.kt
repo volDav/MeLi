@@ -19,7 +19,6 @@ class DiffCallback<K>(val compareItems: (old: K, new: K) -> Boolean, val compare
      override fun areContentsTheSame(old: K, new: K) = compareContents(old, new)
 }
 
-
 fun AppCompatImageView.loadImageFromUrl(url: String, onSuccess: () -> Unit = {}, onError: (p0 : String) -> Unit = {}) {
      if(url.isEmpty()) {
           onError.invoke("")

@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.ui.AppBarConfiguration
 import com.drac.challenge.databinding.ActivityMainBinding
 import com.drac.challenge.presentation.common.hideInput
 import com.drac.challenge.presentation.ui.results.ResultsActivity
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.onEach
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     private val viewModel by viewModels<SearchVM>()
@@ -26,13 +24,6 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setSupportActionBar(binding.toolbar)
-/*
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-*/
 
         binding.viewModel = viewModel
 
@@ -41,7 +32,6 @@ class SearchActivity : AppCompatActivity() {
                 Toast.makeText(this@SearchActivity, "Ingresar informacion", Toast.LENGTH_SHORT).show()
             }
         }.launchIn(lifecycleScope)
-
 
         viewModel.goToSearch.onEach {
             hideInput(binding.etSearch)
@@ -56,10 +46,5 @@ class SearchActivity : AppCompatActivity() {
         }
 
     }
-/*
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }*/
+
 }

@@ -1,8 +1,8 @@
-package com.drac.challenge.network
+package com.drac.challenge.data.network
 
-import com.drac.challenge.domain.model.Description
-import com.drac.challenge.domain.model.Item
-import com.drac.challenge.domain.model.ObjectItems
+import com.drac.challenge.data.model.DescriptionModel
+import com.drac.challenge.data.model.ItemModel
+import com.drac.challenge.data.model.ObjectItemsModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.QueryMap
@@ -13,22 +13,16 @@ interface MeliApi {
     suspend fun getItems(
         @Path("siteId") siteId: String,
         @QueryMap query: HashMap<String, String>
-    ): ObjectItems
+    ): ObjectItemsModel
 
     @GET("items/{itemId}")
     suspend fun getFullItem(
         @Path("itemId") itemId: String
-    ): Item
+    ): ItemModel
 
     @GET("items/{itemId}/description")
     suspend fun getDescription(
         @Path("itemId") itemId: String
-    ): Description
+    ): DescriptionModel
 
-/*
-    @GET("items/{itemId}/description")
-    suspend fun getItemDescription(
-        @Path("itemId") itemId: String
-    ): ItemDescription
-*/
 }

@@ -18,14 +18,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailVM @Inject public constructor(
+class DetailVM @Inject constructor(
     private val detailItemUseCase: DetailItemUseCase
 ) : ViewModel() {
 
     private var idItem: String = ""
 
-    private val _stateRequest = MutableStateFlow<State<Boolean>>(State.Empty())
-    val stateRequest : StateFlow<State<Boolean>> = _stateRequest
+    private val _stateRequest = MutableStateFlow<State<Unit>>(State.Empty())
+    val stateRequest : StateFlow<State<Unit>> = _stateRequest
 
     private val _fullItem = MutableLiveData<Item>()
     val fullItem : LiveData<Item> = _fullItem
@@ -42,7 +42,7 @@ class DetailVM @Inject public constructor(
             val job1 = async  { detailItemUseCase.getDetailItem(idItem) }
             val job2 = async  { detailItemUseCase.getDescription(idItem) }
 
-            val detail: ResultOrError<Item, Exception> = job1.await()
+            val detail = job1.await()
             val desc = job2.await()
 
 
@@ -54,7 +54,7 @@ class DetailVM @Inject public constructor(
                     auxItem.description = desc.p0
                 }
 
-                _stateRequest.value = State.Success(true)
+                _stateRequest.value = State.Success(Unit)
                 _fullItem.value = auxItem
             } else {
                 _stateRequest.value = State.Error("")

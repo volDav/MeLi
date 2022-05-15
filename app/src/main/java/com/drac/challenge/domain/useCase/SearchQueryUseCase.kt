@@ -1,10 +1,13 @@
 package com.drac.challenge.domain.useCase
 
+import com.drac.challenge.common.ResultOrError
+import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.repository.DataRepository
 import javax.inject.Inject
 
 class SearchQueryUseCase @Inject constructor(
     private val dataRepository: DataRepository
 ) {
-    suspend fun execute(siteId: String, query: HashMap<String, String>) = dataRepository.getResults(siteId,query)
+    suspend fun getResults(siteId: String, query: HashMap<String, String>) = dataRepository.getResults(siteId,query)
+
 }

@@ -1,0 +1,36 @@
+package com.drac.challenge.mapper
+
+import com.drac.challenge.data.model.DescriptionModel
+import com.drac.challenge.data.model.ItemModel
+import com.drac.challenge.data.model.PictureModel
+import com.drac.challenge.domain.model.Description
+import com.drac.challenge.domain.model.Item
+import com.drac.challenge.domain.model.Picture
+
+fun ItemModel.toDomain() : Item {
+    return Item(
+        id = id,
+        title = title,
+        price = price,
+        availableQuantity = availableQuantity,
+        soldQuantity = soldQuantity,
+        thumbnail = thumbnail,
+        pictures = pictures?.map { it.toDomain() },
+        description = description?.toDomain()
+    )
+}
+
+fun DescriptionModel.toDomain() : Description {
+    return Description(
+        text = text,
+        plainText = plainText
+    )
+}
+
+fun PictureModel.toDomain(): Picture {
+    return Picture(
+        id = id,
+        url = url,
+        secureUrl = secureUrl
+    )
+}

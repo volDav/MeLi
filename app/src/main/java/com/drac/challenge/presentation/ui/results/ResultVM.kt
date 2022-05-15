@@ -3,6 +3,10 @@ package com.drac.challenge.presentation.ui.results
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drac.challenge.common.ResultOrError
+import com.drac.challenge.common.Variables.limit
+import com.drac.challenge.common.Variables.mco
+import com.drac.challenge.common.Variables.offset
+import com.drac.challenge.common.Variables.q
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.useCase.SearchQueryUseCase
 import com.drac.challenge.presentation.common.State
@@ -14,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ResultVM @Inject public constructor(
+class ResultVM @Inject constructor(
     private val searchQueryUseCase: SearchQueryUseCase
 ) : ViewModel() {
 
@@ -26,42 +30,45 @@ class ResultVM @Inject public constructor(
     private val _loadRecycler = MutableStateFlow<List<Item>>(listOf())
     val loadRecycler: StateFlow<List<Item>> = _loadRecycler
 
-    private var query: String = ""
+    private val map by lazy {
+        hashMapOf(
+            q to "",
+            limit to "15",
+            offset to "${results.size}"
+        )
+    }
 
     fun setQueryData(query: String) {
-        this.query = query
+        map[q] = query
     }
 
     fun executeQuery() {
-
-        _loadRecycler.value = results
+        setResultToRecycler()
 
         _stateRequest.value = State.Loading()
         viewModelScope.launch {
-
             delay(500)
 
-            val map = hashMapOf(
-                "q" to query,
-                "limit" to "15",
-                "offset" to "${results.size}"
-            )
-            val rta = searchQueryUseCase.execute("MCO",map)
+            map[offset] = "${results.size}"
+
+            val rta = searchQueryUseCase.getResults(mco,map)
 
             when(rta) {
                 is ResultOrError.Result -> {
-                    results.addAll(rta.p0.results)
+                    results.addAll(rta.p0)
                     _stateRequest.value = State.Success(true)
-                    _loadRecycler.value = results
+                    setResultToRecycler()
                 }
                 is ResultOrError.Fail -> {
                     _stateRequest.value = State.Error(rta.p0.message ?: "")
                 }
             }
-
-
         }
 
+    }
+
+    private fun setResultToRecycler() {
+        _loadRecycler.value = results
     }
 
 }
