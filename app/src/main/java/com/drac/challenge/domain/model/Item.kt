@@ -9,5 +9,7 @@ data class Item (
     val thumbnail: String,
 
     var pictures: List<Picture>? = null,
-    var description: Description? = null
+    var description: Description? = null,
+
+    var favorite: Boolean = false
 )

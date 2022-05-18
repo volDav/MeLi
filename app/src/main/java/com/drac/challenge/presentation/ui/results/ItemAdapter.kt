@@ -1,6 +1,5 @@
 package com.drac.challenge.presentation.ui.results
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -37,6 +36,9 @@ class ItemAdapter(private val callback: (Item) -> Unit) : ListAdapter<Item, Item
             binding.model = model
             binding.layItem.setOnClickListener {
                 callback.invoke(model)
+            }
+            binding.imgFavorite.setOnClickListener {
+                model.favorite = !model.favorite
             }
             binding.ivPicture.loadImageFromUrl(model.thumbnail)
         }

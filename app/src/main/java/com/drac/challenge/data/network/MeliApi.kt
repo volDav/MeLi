@@ -1,8 +1,8 @@
 package com.drac.challenge.data.network
 
-import com.drac.challenge.data.model.DescriptionModel
-import com.drac.challenge.data.model.ItemModel
-import com.drac.challenge.data.model.ObjectItemsModel
+import com.drac.challenge.data.network.model.DescriptionModel
+import com.drac.challenge.data.network.model.ItemModel
+import com.drac.challenge.data.network.model.ObjectItemsModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.QueryMap

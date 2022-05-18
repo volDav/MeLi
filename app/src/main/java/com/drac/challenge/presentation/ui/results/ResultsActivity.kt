@@ -4,9 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.drac.challenge.databinding.ActivityResultsBinding
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.presentation.common.State
@@ -39,13 +43,22 @@ class ResultsActivity : AppCompatActivity() {
         binding = ActivityResultsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         viewModel.setQueryData(intent.getStringExtra("query") ?: "")
 
         loadAdapter()
 
         initListeners()
 
+        binding.rvItems.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
         viewModel.executeQuery()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     private fun hideOrShowRequestAgain(show: Boolean) {
@@ -71,13 +84,30 @@ class ResultsActivity : AppCompatActivity() {
             }
         }.launchIn(lifecycleScope)
 
-        viewModel.loadRecycler.onEach {
-            fillAdapter(it)
-        }.launchIn(lifecycleScope)
+        viewModel.loadRecycler.observe(this) {
+            fillAdapter(it.toMutableList())
+        }
 
         binding.btnRepeat.setOnClickListener {
             viewModel.executeQuery()
         }
+
+        binding.rvItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                (recyclerView.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
+
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    viewModel.evaluatePaging(
+                        visibleItemCount,
+                        totalItemCount,
+                        firstVisibleItemPosition
+                    )
+                }
+            }
+        })
     }
 
     private fun loadAdapter() {
@@ -85,7 +115,7 @@ class ResultsActivity : AppCompatActivity() {
         binding.rvItems.adapter = adapter
     }
 
-    private fun fillAdapter(lst: List<Item>) {
+    private fun fillAdapter(lst: MutableList<Item>) {
         adapter.submitList(lst)
     }
 

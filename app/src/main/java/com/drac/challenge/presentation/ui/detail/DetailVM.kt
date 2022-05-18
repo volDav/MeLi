@@ -12,6 +12,7 @@ import com.drac.challenge.presentation.common.State
 import com.drac.challenge.presentation.common.loadImageFromUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ class DetailVM @Inject constructor(
 
         _stateRequest.value = State.Loading()
         viewModelScope.launch {
+            delay(500)
 
             val job1 = async  { detailItemUseCase.getDetailItem(idItem) }
             val job2 = async  { detailItemUseCase.getDescription(idItem) }

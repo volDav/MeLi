@@ -1,8 +1,8 @@
 package com.drac.challenge.domain.fakes
 
-import com.drac.challenge.data.model.DescriptionModel
-import com.drac.challenge.data.model.ItemModel
-import com.drac.challenge.data.model.PictureModel
+import com.drac.challenge.data.network.model.DescriptionModel
+import com.drac.challenge.data.network.model.ItemModel
+import com.drac.challenge.data.network.model.PictureModel
 
 val fakePictures = listOf(
     PictureModel(

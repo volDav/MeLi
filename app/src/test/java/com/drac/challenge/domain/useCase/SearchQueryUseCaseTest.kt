@@ -6,7 +6,7 @@ import com.drac.challenge.common.Variables.mco
 import com.drac.challenge.common.Variables.offset
 import com.drac.challenge.common.Variables.q
 import com.drac.challenge.data.impl.DataRepositoryImpl
-import com.drac.challenge.data.model.ObjectItemsModel
+import com.drac.challenge.data.network.model.ObjectItemsModel
 import com.drac.challenge.data.network.MeliApi
 import com.drac.challenge.domain.fakes.itemFakeWithoutPictures
 import com.drac.challenge.domain.repository.DataRepository
@@ -88,7 +88,7 @@ class SearchQueryUseCaseTest {
     }
 
     @Test
-    fun `Verify id MCO and HashMap object is being sending to the request`() = runBlocking {
+    fun `Verify id MCO and HashMap object is being sent to the request`() = runBlocking {
         //When
         val map = hashMapOf(
             q to "Headphones",

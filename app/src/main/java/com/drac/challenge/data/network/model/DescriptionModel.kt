@@ -1,4 +1,4 @@
-package com.drac.challenge.data.model
+package com.drac.challenge.data.network.model
 
 import com.google.gson.annotations.SerializedName
 

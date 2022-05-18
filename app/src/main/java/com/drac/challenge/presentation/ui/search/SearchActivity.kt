@@ -27,6 +27,8 @@ class SearchActivity : AppCompatActivity() {
 
         binding.viewModel = viewModel
 
+        viewModel.addCallbacks()
+
         viewModel.badInput.onEach {
             if(it) {
                 Toast.makeText(this@SearchActivity, "Ingresar informacion", Toast.LENGTH_SHORT).show()
@@ -35,7 +37,8 @@ class SearchActivity : AppCompatActivity() {
 
         viewModel.goToSearch.onEach {
             hideInput(binding.etSearch)
-            ResultsActivity.startActivity(this,it)
+            ResultsActivity.startActivity(this, it)
+
         }.launchIn(lifecycleScope)
 
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->

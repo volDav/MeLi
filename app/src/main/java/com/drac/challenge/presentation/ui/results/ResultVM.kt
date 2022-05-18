@@ -1,7 +1,6 @@
 package com.drac.challenge.presentation.ui.results
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.drac.challenge.common.ResultOrError
 import com.drac.challenge.common.Variables.limit
 import com.drac.challenge.common.Variables.mco
@@ -27,8 +26,8 @@ class ResultVM @Inject constructor(
     private val _stateRequest = MutableStateFlow<State<Boolean>>(State.Empty())
     val stateRequest : StateFlow<State<Boolean>> = _stateRequest
 
-    private val _loadRecycler = MutableStateFlow<List<Item>>(listOf())
-    val loadRecycler: StateFlow<List<Item>> = _loadRecycler
+    private val _loadRecycler = MutableLiveData<List<Item>>(listOf())
+    val loadRecycler: LiveData<List<Item>> = _loadRecycler
 
     private val map by lazy {
         hashMapOf(
@@ -38,12 +37,19 @@ class ResultVM @Inject constructor(
         )
     }
 
+    fun evaluatePaging(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
+        if(_stateRequest.value !is State.Loading) {
+            if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                executeQuery()
+            }
+        }
+    }
+
     fun setQueryData(query: String) {
         map[q] = query
     }
 
     fun executeQuery() {
-        setResultToRecycler()
 
         _stateRequest.value = State.Loading()
         viewModelScope.launch {
@@ -64,11 +70,12 @@ class ResultVM @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun setResultToRecycler() {
-        _loadRecycler.value = results
+        if (results.isNotEmpty()) {
+            _loadRecycler.value = results
+        }
     }
 
 }
