@@ -27,18 +27,21 @@ class ItemAdapter(private val callback: (Item) -> Unit) : ListAdapter<Item, Item
     }
 
     override fun onBindViewHolder(holder: HolderItem, position: Int) {
-        holder.onBind(getItem(position),callback)
+        holder.onBind(getItem(position), callback) {
+            notifyItemChanged(position)
+        }
     }
 
     class HolderItem(private val binding: HolderItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(model: Item, callback: (Item) -> Unit) {
+        fun onBind(model: Item, callback: (Item) -> Unit, updateFavorite: () -> Unit) {
             binding.model = model
             binding.layItem.setOnClickListener {
                 callback.invoke(model)
             }
             binding.imgFavorite.setOnClickListener {
                 model.favorite = !model.favorite
+                updateFavorite()
             }
             binding.ivPicture.loadImageFromUrl(model.thumbnail)
         }

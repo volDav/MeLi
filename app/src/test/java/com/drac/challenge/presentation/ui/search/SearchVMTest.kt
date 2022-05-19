@@ -1,64 +1,77 @@
 package com.drac.challenge.presentation.ui.search
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.cash.turbine.FlowTurbine
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import app.cash.turbine.testIn
 import com.drac.challenge.common.CoroutineTestRule
-import io.mockk.coEvery
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
+import io.mockk.unmockkAll
+import kotlinx.coroutines.*
 import org.junit.After
-import org.junit.Before
-
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class SearchVMTest {
 
+    @get:Rule
+    val testRule = CoroutineTestRule()
 
     private lateinit var viewModel: SearchVM
 
-
-    @get:Rule
-    var coroutineTestRule = CoroutineTestRule()
-
     @Before
     fun onBefore() {
-        viewModel = SearchVM()
-        Dispatchers.setMain(Dispatchers.Unconfined)
+        viewModel = SearchVM(
+            SavedStateHandle(),
+            testRule.dispatcher
+        )
     }
 
     @After
-    fun after() {
-        Dispatchers.resetMain()
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
-    fun `Verify SharedFlow returns data`() = coroutineTestRule.testDispatcher.runBlockingTest {
+    fun `Verify SharedFlow badInput returns true`() = testRule.runBlockingTest {
+        viewModel.input.set("")
 
-        viewModel.evaluateQuery()
+        val job = launch(testRule.dispatcher) {
+            viewModel.badInput.test {
+                assertEquals(true, awaitItem())
+                cancelAndConsumeRemainingEvents()
 
-        viewModel.badInput.collect {
-            assertEquals(true, it)
+            }
+            viewModel.goToSearch.test {
+                expectNoEvents()
+            }
         }
-
-
-
-       /* val turbine = viewModel
-            .badInput
-            .testIn(this)
-
-
         viewModel.evaluateQuery()
-*/
-
+        job.join()
+        job.cancel()
     }
+
+    @Test
+    fun `Verify SharedFlow goToSearch returns the Query`() = testRule.runBlockingTest {
+
+        val query = "Xiaomi"
+        viewModel.input.set(query)
+
+        val job = launch(testRule.dispatcher) {
+            viewModel.goToSearch.test {
+                assertEquals(query, awaitItem())
+                cancelAndConsumeRemainingEvents()
+            }
+            viewModel.badInput.test {
+                expectNoEvents()
+            }
+        }
+        viewModel.evaluateQuery()
+        job.join()
+        job.cancel()
+    }
+
+
+
+
 }

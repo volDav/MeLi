@@ -18,6 +18,7 @@ import com.drac.challenge.presentation.common.closeProgressDialog
 import com.drac.challenge.presentation.common.showProgressDialog
 import com.drac.challenge.presentation.ui.detail.DetailActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -66,23 +67,23 @@ class ResultsActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        viewModel.stateRequest.onEach {
-            when (it) {
-                is State.Loading -> {
-                    showProgressDialog()
-                    hideOrShowRequestAgain(false)
-                }
-                is State.Success -> {
-                    closeProgressDialog()
-                    hideOrShowRequestAgain(false)
-                }
-                is State.Error -> {
-                    closeProgressDialog()
-                    hideOrShowRequestAgain(true)
-                }
-                else -> Unit
-            }
-        }.launchIn(lifecycleScope)
+        viewModel.stateRequest
+            .onEach {
+                when (it) {
+                    is State.Loading -> {
+                        showProgressDialog()
+                        hideOrShowRequestAgain(false)
+                    }
+                    is State.Success -> {
+                        closeProgressDialog()
+                        hideOrShowRequestAgain(false)
+                    }
+                    is State.Error -> {
+                        closeProgressDialog()
+                        hideOrShowRequestAgain(true)
+                    }
+                    else -> Unit }
+            }.launchIn(lifecycleScope)
 
         viewModel.loadRecycler.observe(this) {
             fillAdapter(it.toMutableList())

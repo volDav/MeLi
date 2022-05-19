@@ -1,7 +1,5 @@
 package com.drac.challenge.domain.useCase
 
-import com.drac.challenge.common.ResultOrError
-import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.repository.DataRepository
 import javax.inject.Inject
 

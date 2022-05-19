@@ -6,13 +6,22 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import com.drac.challenge.di.MainDispatcher
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchVM(private val state: SavedStateHandle) : ViewModel() {
+@HiltViewModel
+class SearchVM @Inject constructor(
+    private val state: SavedStateHandle,
+    @MainDispatcher private val dispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val _badInput = MutableSharedFlow<Boolean>()
     val badInput: SharedFlow<Boolean> = _badInput
@@ -28,7 +37,7 @@ class SearchVM(private val state: SavedStateHandle) : ViewModel() {
     }
 
     fun evaluateQuery() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             if(input.get()?.isEmpty() == true) {
                 _badInput.emit(true)
             } else {

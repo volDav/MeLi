@@ -6,4 +6,6 @@ object Variables {
     const val q = "q"
     const val offset = "offset"
     const val limit = "limit"
+
+    const val limitValue = "15"
 }

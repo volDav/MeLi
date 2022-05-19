@@ -1,26 +1,26 @@
 package com.drac.challenge.domain.useCase
 
-import com.drac.challenge.common.ResultOrError
+import com.drac.challenge.common.*
 import com.drac.challenge.data.impl.DataRepositoryImpl
 import com.drac.challenge.data.network.MeliApi
-import com.drac.challenge.domain.fakes.descriptionFake
-import com.drac.challenge.domain.fakes.itemFakeWithPictures
-import com.drac.challenge.domain.fakes.itemFakeWithoutPictures
 import com.drac.challenge.domain.repository.DataRepository
 import com.drac.challenge.mapper.toDomain
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.slot
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.lang.NullPointerException
 import java.util.concurrent.TimeoutException
 
+@ExperimentalCoroutinesApi
 class DetailItemUseCaseTest {
 
+
+    @get:Rule
+    val testRule = CoroutineTestRule()
 
     @RelaxedMockK
     private lateinit var meliApi: MeliApi
@@ -33,12 +33,17 @@ class DetailItemUseCaseTest {
     @Before
     fun onBefore() {
         MockKAnnotations.init(this)
-        dataRepository = DataRepositoryImpl(meliApi)
+        dataRepository = DataRepositoryImpl(meliApi, testRule.dispatcher)
         detailItemUseCase = DetailItemUseCase(dataRepository)
     }
 
+    @After
+    fun tearDown() {
+        unmockkAll()
+    }
+
     @Test
-    fun `When Api Returns something then get that values`() = runBlocking {
+    fun `When Api Returns something then get that values`() = testRule.runBlockingTest {
         //Given
         coEvery { meliApi.getFullItem("") } returns itemFakeWithPictures
 
@@ -52,7 +57,7 @@ class DetailItemUseCaseTest {
 
 
     @Test
-    fun `When Api returns an item and if it doesn't contains pictures then return an exception`() = runBlocking {
+    fun `When Api returns an item and if it doesn't contains pictures then return an exception`() = testRule.runBlockingTest {
         //Given
         coEvery { meliApi.getFullItem("") } returns itemFakeWithoutPictures
 
@@ -66,7 +71,7 @@ class DetailItemUseCaseTest {
 
 
     @Test
-    fun `When Api Return a Exception then get that exception from Detail`() = runBlocking {
+    fun `When Api Return a Exception then get that exception from Detail`() = testRule.runBlockingTest {
         //Given
         coEvery { meliApi.getFullItem("") }.throws(TimeoutException(""))
 
@@ -79,7 +84,7 @@ class DetailItemUseCaseTest {
     }
 
     @Test
-    fun `Verify itemID is being sent to the request from Detail`() = runBlocking {
+    fun `Verify itemID is being sent to the request from Detail`() = testRule.runBlockingTest {
         //Given
         val itemID = "MCO658984720"
 
@@ -94,7 +99,7 @@ class DetailItemUseCaseTest {
 
 
     @Test
-    fun `When Api returns something Then get that values` () = runBlocking {
+    fun `When Api returns something Then get that values` () = testRule.runBlockingTest {
         //Given
         coEvery { meliApi.getDescription("") } returns descriptionFake
 
@@ -110,7 +115,7 @@ class DetailItemUseCaseTest {
     }
 
     @Test
-    fun `When Api Return a Exception then get that exception from Description`() = runBlocking {
+    fun `When Api Return a Exception then get that exception from Description`() = testRule.runBlockingTest {
         //Given
         coEvery { meliApi.getDescription("") }.throws(TimeoutException(""))
 
@@ -124,7 +129,7 @@ class DetailItemUseCaseTest {
 
 
     @Test
-    fun `Verify itemID is being sent to the request from Description`() = runBlocking {
+    fun `Verify itemID is being sent to the request from Description`() = testRule.runBlockingTest {
         //Given
         val itemID = "MCO658984720"
 

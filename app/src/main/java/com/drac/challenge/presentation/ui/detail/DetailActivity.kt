@@ -13,7 +13,9 @@ import com.drac.challenge.domain.model.Item
 import com.drac.challenge.presentation.common.State
 import com.drac.challenge.presentation.common.closeProgressDialog
 import com.drac.challenge.presentation.common.showProgressDialog
+import com.drac.challenge.presentation.utils.toPrice
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -89,8 +91,9 @@ class DetailActivity : AppCompatActivity() {
 
     private fun setData(it: Item) {
         binding.tvTitle.text = it.title
-        binding.tvPrice.text = "${it.price}"
+        binding.tvPrice.text = toPrice(it.price)
         binding.tvDescription.text = it.description?.plainText ?: ""
+        binding.tvPager.text = "1/${it.pictures?.size ?: 1}"
     }
 
     private fun loadData(item: Item) {

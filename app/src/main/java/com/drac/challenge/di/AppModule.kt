@@ -7,6 +7,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 
@@ -16,8 +18,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataRepository(api: MeliApi): DataRepository {
-        return DataRepositoryImpl(api)
+    fun provideDataRepository(api: MeliApi, @IoDispatcher dispatcher: CoroutineDispatcher): DataRepository {
+        return DataRepositoryImpl(api, dispatcher)
     }
 
 }

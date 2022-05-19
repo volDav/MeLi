@@ -9,9 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import com.drac.challenge.databinding.ActivityMainBinding
 import com.drac.challenge.presentation.common.hideInput
 import com.drac.challenge.presentation.ui.results.ResultsActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
