@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drac.challenge.common.ResultOrError
+import com.drac.challenge.di.MainDispatcher
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.useCase.DetailItemUseCase
 import com.drac.challenge.presentation.common.State
 import com.drac.challenge.presentation.common.loadImageFromUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +22,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailVM @Inject constructor(
-    private val detailItemUseCase: DetailItemUseCase
+    private val detailItemUseCase: DetailItemUseCase,
+    @MainDispatcher
+    private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private var idItem: String = ""
@@ -31,22 +35,23 @@ class DetailVM @Inject constructor(
     private val _fullItem = MutableLiveData<Item>()
     val fullItem : LiveData<Item> = _fullItem
 
+
     fun setId(idItem: String) {
         this.idItem = idItem
+        executeRequest()
     }
 
     fun executeRequest() {
 
         _stateRequest.value = State.Loading()
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             delay(500)
 
-            val job1 = async  { detailItemUseCase.getDetailItem(idItem) }
-            val job2 = async  { detailItemUseCase.getDescription(idItem) }
+            val job1 = async { detailItemUseCase.getDetailItem(idItem) }
+            val job2 = async { detailItemUseCase.getDescription(idItem) }
 
             val detail = job1.await()
             val desc = job2.await()
-
 
             if(detail is ResultOrError.Result) {
 

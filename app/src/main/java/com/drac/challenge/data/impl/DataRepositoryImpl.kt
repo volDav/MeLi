@@ -3,6 +3,7 @@ package com.drac.challenge.data.impl
 import com.drac.challenge.common.ResultOrError
 import com.drac.challenge.data.network.MeliApi
 import com.drac.challenge.di.IoDispatcher
+import com.drac.challenge.domain.model.Category
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.repository.DataRepository
 import com.drac.challenge.mapper.toDomain
@@ -16,6 +17,20 @@ class DataRepositoryImpl @Inject constructor (
     private val meliApi: MeliApi,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : DataRepository {
+
+    override suspend fun getCategories(siteId: String): ResultOrError<List<Category>, Exception> = withContext(dispatcher) {
+        try {
+            val categories = meliApi.getCategories(siteId)
+            if(categories.isNotEmpty()) {
+                ResultOrError.Result(categories.map { it.toDomain() })
+            } else {
+                ResultOrError.Fail(NullPointerException("Empty List"))
+            }
+
+        } catch (e: Exception) {
+            ResultOrError.Fail(e)
+        }
+    }
 
     override suspend fun getResults(siteId: String, query: HashMap<String, String>) = withContext(dispatcher) {
         try {

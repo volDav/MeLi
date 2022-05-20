@@ -47,7 +47,7 @@ class DetailActivity : AppCompatActivity() {
 
         initListeners()
 
-        viewModel.executeRequest()
+        //viewModel.executeRequest()
 
     }
 

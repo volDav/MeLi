@@ -2,6 +2,7 @@ package com.drac.challenge.presentation.ui.results
 
 import androidx.lifecycle.*
 import com.drac.challenge.common.ResultOrError
+import com.drac.challenge.common.Variables.category
 import com.drac.challenge.common.Variables.limit
 import com.drac.challenge.common.Variables.limitValue
 import com.drac.challenge.common.Variables.mco
@@ -13,7 +14,6 @@ import com.drac.challenge.domain.useCase.SearchQueryUseCase
 import com.drac.challenge.presentation.common.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ResultVM @Inject constructor(
     private val searchQueryUseCase: SearchQueryUseCase,
-    @MainDispatcher private val dispatcher: CoroutineDispatcher,
+    @MainDispatcher
+    private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val results: ArrayList<Item> = arrayListOf()
@@ -43,21 +44,32 @@ class ResultVM @Inject constructor(
     }
 
     fun evaluatePaging(visibleItemCount: Int, totalItemCount: Int, firstVisibleItemPosition: Int) {
-        if(_stateRequest.value !is State.Loading) {
-            if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+        if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+            isNotRequesting {
                 executeQuery()
             }
         }
     }
 
-    fun setQueryData(query: String) {
-        map[q] = query
+    fun setQueryData(p0: String) {
+        map[q] = p0
+        isNotRequesting {
+            executeQuery()
+        }
+    }
+
+    fun setCategoryData(p0: String) {
+        map[category] = p0
+        isNotRequesting {
+            executeQuery()
+        }
     }
 
     fun executeQuery() {
 
         _stateRequest.value = State.Loading()
         viewModelScope.launch(dispatcher) {
+            //This delay is to give user better experience with  the popup "Loading"
             delay(500)
 
             map[offset] = "${results.size}"
@@ -66,9 +78,8 @@ class ResultVM @Inject constructor(
 
             when(rta) {
                 is ResultOrError.Result -> {
-                    results.addAll(rta.p0)
                     _stateRequest.value = State.Success(true)
-                    setResultToRecycler()
+                    updateAndSetResultToRecycler(rta.p0)
                 }
                 is ResultOrError.Fail -> {
                     _stateRequest.value = State.Error(rta.p0.message ?: "")
@@ -77,7 +88,14 @@ class ResultVM @Inject constructor(
         }
     }
 
-    private fun setResultToRecycler() {
+    private fun isNotRequesting(callback: () -> Unit) {
+        if(_stateRequest.value !is State.Loading){
+            callback.invoke()
+        }
+    }
+
+    private fun updateAndSetResultToRecycler(p0: List<Item>) {
+        results.addAll(p0)
         if (results.isNotEmpty()) {
             _loadRecycler.value = results
         }

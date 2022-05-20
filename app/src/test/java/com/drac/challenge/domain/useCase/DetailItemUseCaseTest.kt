@@ -45,7 +45,7 @@ class DetailItemUseCaseTest {
     @Test
     fun `When Api Returns something then get that values`() = testRule.runBlockingTest {
         //Given
-        coEvery { meliApi.getFullItem("") } returns itemFakeWithPictures
+        coEvery { meliApi.getFullItem(any()) } returns itemFakeWithPictures
 
         //When
         val response = detailItemUseCase.getDetailItem("")
@@ -59,7 +59,7 @@ class DetailItemUseCaseTest {
     @Test
     fun `When Api returns an item and if it doesn't contains pictures then return an exception`() = testRule.runBlockingTest {
         //Given
-        coEvery { meliApi.getFullItem("") } returns itemFakeWithoutPictures
+        coEvery { meliApi.getFullItem(any()) } returns itemFakeWithoutPictures
 
         //When
         val response = detailItemUseCase.getDetailItem("")
@@ -73,7 +73,7 @@ class DetailItemUseCaseTest {
     @Test
     fun `When Api Return a Exception then get that exception from Detail`() = testRule.runBlockingTest {
         //Given
-        coEvery { meliApi.getFullItem("") }.throws(TimeoutException(""))
+        coEvery { meliApi.getFullItem(any()) }.throws(TimeoutException(""))
 
         //When
         val response = detailItemUseCase.getDetailItem("")
@@ -101,7 +101,7 @@ class DetailItemUseCaseTest {
     @Test
     fun `When Api returns something Then get that values` () = testRule.runBlockingTest {
         //Given
-        coEvery { meliApi.getDescription("") } returns descriptionFake
+        coEvery { meliApi.getDescription(any()) } returns descriptionFake
 
         //When
         val response = detailItemUseCase.getDescription("")
@@ -117,7 +117,7 @@ class DetailItemUseCaseTest {
     @Test
     fun `When Api Return a Exception then get that exception from Description`() = testRule.runBlockingTest {
         //Given
-        coEvery { meliApi.getDescription("") }.throws(TimeoutException(""))
+        coEvery { meliApi.getDescription(any()) }.throws(TimeoutException(""))
 
         //When
         val response = detailItemUseCase.getDescription("")

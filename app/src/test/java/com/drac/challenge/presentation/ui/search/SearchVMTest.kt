@@ -3,6 +3,12 @@ package com.drac.challenge.presentation.ui.search
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.drac.challenge.common.CoroutineTestRule
+import com.drac.challenge.data.impl.DataRepositoryImpl
+import com.drac.challenge.data.network.MeliApi
+import com.drac.challenge.domain.repository.DataRepository
+import com.drac.challenge.domain.useCase.SearchQueryUseCase
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.unmockkAll
 import kotlinx.coroutines.*
 import org.junit.After
@@ -17,12 +23,23 @@ class SearchVMTest {
     @get:Rule
     val testRule = CoroutineTestRule()
 
+    @RelaxedMockK
+    private lateinit var meliApi: MeliApi
+
+    private lateinit var dataRepository: DataRepository
+
+    private lateinit var searchQueryUseCase: SearchQueryUseCase
+
     private lateinit var viewModel: SearchVM
 
     @Before
     fun onBefore() {
+        MockKAnnotations.init(this)
+        dataRepository = DataRepositoryImpl(meliApi,testRule.dispatcher)
+        searchQueryUseCase = SearchQueryUseCase(dataRepository)
         viewModel = SearchVM(
             SavedStateHandle(),
+            searchQueryUseCase,
             testRule.dispatcher
         )
     }

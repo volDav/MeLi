@@ -1,5 +1,6 @@
 package com.drac.challenge.data.network
 
+import com.drac.challenge.data.network.model.CategoryModel
 import com.drac.challenge.data.network.model.DescriptionModel
 import com.drac.challenge.data.network.model.ItemModel
 import com.drac.challenge.data.network.model.ObjectItemsModel
@@ -8,6 +9,11 @@ import retrofit2.http.Path
 import retrofit2.http.QueryMap
 
 interface MeliApi {
+
+    @GET("sites/{siteId}/categories")
+    suspend fun getCategories(
+        @Path("siteId") siteId: String
+    ): List<CategoryModel>
 
     @GET("sites/{siteId}/search")
     suspend fun getItems(

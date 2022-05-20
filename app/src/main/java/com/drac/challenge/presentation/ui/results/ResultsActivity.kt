@@ -26,9 +26,10 @@ import kotlinx.coroutines.flow.onEach
 class ResultsActivity : AppCompatActivity() {
 
     companion object {
-        fun startActivity(ctx: Context, query: String) {
+        fun startActivity(ctx: Context, query: String? = "", category: String? = "") {
             val intent = Intent(ctx, ResultsActivity::class.java)
             intent.putExtra("query", query)
+            intent.putExtra("category", category)
             ctx.startActivity(intent)
         }
     }
@@ -46,15 +47,11 @@ class ResultsActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.setQueryData(intent.getStringExtra("query") ?: "")
-
+        loadTypeOfConsult()
         loadAdapter()
-
-        initListeners()
+        initListenersOrObservers()
 
         binding.rvItems.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-
-        viewModel.executeQuery()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -62,11 +59,21 @@ class ResultsActivity : AppCompatActivity() {
         return true
     }
 
+    private fun loadTypeOfConsult() {
+        intent.getStringExtra("query")?.takeIf { it.isNotEmpty() }?.let {
+            viewModel.setQueryData(it)
+            return
+        }
+        intent.getStringExtra("category")?.takeIf { it.isNotEmpty() }?.let {
+            viewModel.setCategoryData(it)
+        }
+    }
+
     private fun hideOrShowRequestAgain(show: Boolean) {
         binding.btnRepeat.visibility = if(show) View.VISIBLE else View.GONE
     }
 
-    private fun initListeners() {
+    private fun initListenersOrObservers() {
         viewModel.stateRequest
             .onEach {
                 when (it) {

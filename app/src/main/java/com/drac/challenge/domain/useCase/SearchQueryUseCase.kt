@@ -8,4 +8,6 @@ class SearchQueryUseCase @Inject constructor(
 ) {
     suspend fun getResults(siteId: String, query: HashMap<String, String>) = dataRepository.getResults(siteId,query)
 
+    suspend fun getCategories(siteId: String) = dataRepository.getCategories(siteId)
+
 }

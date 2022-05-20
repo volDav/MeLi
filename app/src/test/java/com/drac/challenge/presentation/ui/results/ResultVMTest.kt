@@ -86,11 +86,12 @@ class ResultVMTest {
 
     }
 
+    //TODO falta el Unit test por categoria
+
     @Test
-    fun  `Verify id MCO and HashMap object is being sent to the request`() = testRule.runBlockingTest {
+    fun  `Verify id MCO and HashMap objects are being sent to the request`() = testRule.runBlockingTest {
         //Given
         val query = "Xiaomi"
-        viewModel.setQueryData(query)
 
         val objectModel = ObjectItemsModel(listOf())
         coEvery { meliApi.getItems(any(), any()) } returns objectModel
@@ -99,7 +100,7 @@ class ResultVMTest {
         val results = mutableListOf<State<Boolean>>()
         val job = launch(testRule.dispatcher) { viewModel.stateRequest.toList(results) }
 
-        viewModel.executeQuery()
+        viewModel.setQueryData(query)
 
         advanceUntilIdle()
 

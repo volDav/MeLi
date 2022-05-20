@@ -1,8 +1,10 @@
 package com.drac.challenge.mapper
 
+import com.drac.challenge.data.network.model.CategoryModel
 import com.drac.challenge.data.network.model.DescriptionModel
 import com.drac.challenge.data.network.model.ItemModel
 import com.drac.challenge.data.network.model.PictureModel
+import com.drac.challenge.domain.model.Category
 import com.drac.challenge.domain.model.Description
 import com.drac.challenge.domain.model.Item
 import com.drac.challenge.domain.model.Picture
@@ -32,5 +34,13 @@ fun PictureModel.toDomain(): Picture {
         id = id,
         url = url,
         secureUrl = secureUrl
+    )
+}
+
+
+fun CategoryModel.toDomain(): Category {
+    return Category(
+        id = id,
+        name = name
     )
 }

@@ -7,7 +7,7 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="again">Reintentar</string>
+    <string name="tryAgain">Reintentar</string>
     <string name="description">Descripción</string>
     <string name="error_service">Se presento un inconveniente</string>
     <string name="loading">Cargando</string>
