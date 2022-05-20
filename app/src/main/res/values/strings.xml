@@ -12,4 +12,8 @@
     <string name="error_service">Se presento un inconveniente</string>
     <string name="loading">Cargando</string>
     <string name="accept">Aceptar</string>
+    <string name="categories">Categorias</string>
+    <string name="search_products_and_more">Busca productos, marcas y mas...</string>
+    <string name="title_search">¿Que estas buscando?</string>
+    <string name="arrive_free_tomorrow">Llega gratis mañana</string>
 </resources>

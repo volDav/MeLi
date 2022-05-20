@@ -67,8 +67,7 @@
             android:text="@{model.title}"
             app:layout_constraintStart_toEndOf="@+id/cardPicture"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Pad Mouse Ergonomico" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvPrice"
@@ -84,8 +83,7 @@
             app:setPrice="@{model.price}"
             app:layout_constraintStart_toEndOf="@+id/cardPicture"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            tools:text="$ 15.200" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
         <TextView
             android:id="@+id/tvFees"
@@ -98,8 +96,7 @@
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@+id/tvPrice"
             app:layout_constraintStart_toEndOf="@+id/cardPicture"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="en 36x $ 87.444" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -114,7 +111,7 @@
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:background="#398CFFC9"
-            android:text="Llega gratis mañana"
+            android:text="@string/arrive_free_tomorrow"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/cardPicture"
             app:layout_constraintTop_toBottomOf="@+id/tvFees"
