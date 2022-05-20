@@ -57,23 +57,27 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        viewModel.stateRequest.onEach {
-            when (it) {
-                is State.Loading -> {
-                    showProgressDialog()
-                    hideOrShowRequestAgain(false)
+        viewModel.stateRequest
+            .catch {
+                closeProgressDialog()
+                hideOrShowRequestAgain(true)
+            }.onEach {
+                when (it) {
+                    is State.Loading -> {
+                        showProgressDialog()
+                        hideOrShowRequestAgain(false)
+                    }
+                    is State.Success -> {
+                        closeProgressDialog()
+                        hideOrShowRequestAgain(false)
+                    }
+                    is State.Error -> {
+                        closeProgressDialog()
+                        hideOrShowRequestAgain(true)
+                    }
+                    else -> Unit
                 }
-                is State.Success -> {
-                    closeProgressDialog()
-                    hideOrShowRequestAgain(false)
-                }
-                is State.Error -> {
-                    closeProgressDialog()
-                    hideOrShowRequestAgain(true)
-                }
-                else -> Unit
-            }
-        }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
 
         viewModel.fullItem.observe(this) {
             setData(it)

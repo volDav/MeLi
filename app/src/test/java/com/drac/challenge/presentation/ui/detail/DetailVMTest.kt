@@ -4,13 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.drac.challenge.common.*
 import com.drac.challenge.data.impl.DataRepositoryImpl
 import com.drac.challenge.data.network.MeliApi
-import com.drac.challenge.data.network.model.ObjectItemsModel
 import com.drac.challenge.domain.repository.DataRepository
 import com.drac.challenge.domain.useCase.DetailItemUseCase
-import com.drac.challenge.domain.useCase.SearchQueryUseCase
-import com.drac.challenge.mapper.toDomain
 import com.drac.challenge.presentation.common.State
-import com.drac.challenge.presentation.ui.results.ResultVM
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify

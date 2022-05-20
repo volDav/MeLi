@@ -8,7 +8,6 @@ import com.drac.challenge.common.Variables.mco
 import com.drac.challenge.common.listCategoriesModelFake
 import com.drac.challenge.data.impl.DataRepositoryImpl
 import com.drac.challenge.data.network.MeliApi
-import com.drac.challenge.data.network.model.CategoryModel
 import com.drac.challenge.domain.repository.DataRepository
 import com.drac.challenge.domain.useCase.SearchQueryUseCase
 import com.drac.challenge.mapper.toDomain
@@ -16,7 +15,6 @@ import com.drac.challenge.presentation.common.State
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
 import org.junit.Assert.*

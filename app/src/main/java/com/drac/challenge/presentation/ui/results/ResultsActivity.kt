@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -75,6 +74,10 @@ class ResultsActivity : AppCompatActivity() {
 
     private fun initListenersOrObservers() {
         viewModel.stateRequest
+            .catch {
+                closeProgressDialog()
+                hideOrShowRequestAgain(true)
+            }
             .onEach {
                 when (it) {
                     is State.Loading -> {
