@@ -43,6 +43,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.rvCategories.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
+        viewModel.getCategories()
     }
 
     private fun initAdapters() {

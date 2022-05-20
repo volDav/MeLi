@@ -41,7 +41,12 @@ class SearchVM @Inject constructor(
     init {
         val saved = state.get("query") ?: ""
         input.set(saved)
-        getCategories()
+    }
+
+    fun getCategories() {
+        if(loadRecycler.value?.isEmpty() == true ) {
+            requestCategories()
+        }
     }
 
     fun evaluateQuery() {
@@ -54,7 +59,7 @@ class SearchVM @Inject constructor(
         }
     }
 
-    fun getCategories() {
+    private fun requestCategories() {
         _stateRequest.value = State.Loading()
         viewModelScope.launch(dispatcher) {
             //This delay is to give user better experience with  the popup "Loading"

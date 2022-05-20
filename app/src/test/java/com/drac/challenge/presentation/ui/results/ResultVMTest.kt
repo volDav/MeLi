@@ -124,7 +124,7 @@ class ResultVMTest {
 
 
     @Test
-    fun `When the Api is called and returns data Then validate the answer`() = testRule.runBlockingTest {
+    fun `When the Api is called and returns data Then validate the answer is OK`() = testRule.runBlockingTest {
         //Given
         val list = listOf(itemFakeWithPictures)
         val objectResponse = ObjectItemsModel(results = list)
